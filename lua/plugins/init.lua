@@ -267,7 +267,7 @@ require("barbecue").setup({
 })
 require("notify").setup({
   stages = "fade_in_slide_out",
-  timeout = 5000,
+  timeout = 3000,
   background_colour = "#282828",
   icons = {
     ERROR = "",
@@ -280,9 +280,6 @@ require("notify").setup({
   max_width = function() return math.floor(vim.o.columns * 0.45) end,
   on_open = function(win) vim.api.nvim_win_set_config(win, { focusable = false }) end
 })
-require("neoscroll").setup({
-  stop_eof = true,
-  easing_function = "sine",
-  hide_cursor = true,
-  cursor_scrolls_alone = true,
-})
+require("mini.surround").setup()
+require("mini.pairs").setup()
+require('mini.animate').setup()

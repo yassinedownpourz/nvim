@@ -49,6 +49,7 @@ M.luasnip = function(opts)
 end
 
 M.gitsigns = {
+  current_line_blame = true,
   signs = {
     add = { text = "│" },
     change = { text = "│" },
