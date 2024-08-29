@@ -13,6 +13,7 @@ vim.api.nvim_set_hl(0, "NeoTreeDirectoryIcon", { fg = "#689D6A" })
 vim.api.nvim_set_hl(0, "NeoTreeDirectoryName", { fg = "#689D6A" })
 vim.api.nvim_set_hl(0, "NeoTreeGitUntracked", { fg = "#b8bb26" })
 vim.api.nvim_set_hl(0, "NeoTreeGitModified", { fg = "#fabd2f" })
+vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { fg = "#689D6A" })
 vim.api.nvim_create_autocmd({
   "WinScrolled", -- or WinResized on NVIM-v0.9 and higher
   "BufWinEnter",
@@ -31,3 +32,21 @@ vim.keymap.set("n", "<leader>bb", function()
   local state = vim.o.showtabline == 2 and "On" or "Off"
   vim.notify("Toggled " .. state, vim.log.levels.INFO, { title = "Tabufline" })
 end, { desc = "Options | Toggle Tabufline", silent = true })
+
+vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(args)
+    local bufnr = args.buf ---@type number
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client.supports_method('textDocument/inlayHint') then
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+      vim.keymap.set('n', '<leader>i', function()
+        vim.lsp.inlay_hint.enable(
+          not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }),
+          { bufnr = bufnr }
+        )
+      end, { buffer = bufnr })
+    end
+  end,
+})

@@ -3,8 +3,6 @@ local on_attach = base.on_attach
 local capabilities = base.capabilities
 capabilities.offsetEncoding = { "utf-16" }
 
-require("lspconfig").eslint.setup {}
-
 local lspconfig = require("lspconfig")
 local servers = {
   "tsserver",
@@ -12,13 +10,52 @@ local servers = {
   "eslint",
   "clangd",
   "intelephense",
-  "ruff",
+  -- "ruff",
   "emmet_language_server",
   "cssls",
   "nil_ls",
-  "jedi_language_server",
+  -- "jedi_language_server",
+  "pylyzer",
 }
-require("lspconfig").clangd.setup({
+
+-- lua-ls
+lspconfig.lua_ls.setup {
+  settings = {
+    Lua = {
+      hint = { enable = true },
+      diagnostics = {
+        globals = { 'vim' }
+      },
+    },
+  },
+}
+-- tsserver
+local inlayHints = {
+  includeInlayParameterNameHints = "all",
+  includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+  includeInlayFunctionParameterTypeHints = true,
+  includeInlayVariableTypeHints = true,
+  includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+  includeInlayPropertyDeclarationTypeHints = true,
+  includeInlayFunctionLikeReturnTypeHints = true,
+  includeInlayEnumMemberValueHints = true,
+}
+lspconfig.tsserver.setup {
+  settings = {
+    typescript = {
+      inlayHints = inlayHints,
+    },
+    javascript = {
+      inlayHints = inlayHints,
+    },
+  },
+}
+
+--eslint
+lspconfig.eslint.setup {}
+
+--clangd
+lspconfig.clangd.setup({
   settings = {
     clangd = {
       InlayHints = {
@@ -31,6 +68,19 @@ require("lspconfig").clangd.setup({
     },
   }
 })
+
+-- pylyzer
+lspconfig.pylyzer.setup {
+  settings = {
+    python = {
+      checkOnType = true,
+      diagnostics = true,
+      inlayHints = true,
+      smartCompletion = true
+    }
+  },
+}
+
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     on_attach = on_attach,

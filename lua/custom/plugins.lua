@@ -112,6 +112,7 @@ local plugins = {
   },
   {
     "rmagatti/auto-session",
+    lazy = false,
   },
   {
     "utilyre/barbecue.nvim",
@@ -255,25 +256,25 @@ local plugins = {
     end,
   },
   { "joosepalviste/nvim-ts-context-commentstring", lazy = true },
-  {
-    "stevearc/dressing.nvim",
-    dependencies = { "MunifTanjim/nui.nvim" },
-    opts = {},
-    config = function()
-      require("dressing").setup()
-    end,
-  },
-  {
-    "karb94/neoscroll.nvim",
-    config = function()
-      require("neoscroll").setup({
-        stop_eof = true,
-        easing_function = "sine",
-        hide_cursor = true,
-        cursor_scrolls_alone = true,
-      })
-    end,
-  },
+  -- {
+  --   "stevearc/dressing.nvim",
+  --   dependencies = { "MunifTanjim/nui.nvim" },
+  --   opts = {},
+  --   config = function()
+  --     require("dressing").setup()
+  --   end,
+  -- },
+  -- {
+  --   "karb94/neoscroll.nvim",
+  --   config = function()
+  --     require("neoscroll").setup({
+  --       stop_eof = true,
+  --       easing_function = "sine",
+  --       hide_cursor = true,
+  --       cursor_scrolls_alone = true,
+  --     })
+  --   end,
+  -- },
   {
     "windwp/nvim-spectre",
     event = "BufRead",
@@ -376,9 +377,63 @@ local plugins = {
   -- }
   -- },
 
+  -- {
+  --   "echasnovski/mini.nvim",
+  --   version = "*",
+  -- },
   {
-    "echasnovski/mini.nvim",
-    version = "*",
+    "echasnovski/mini.indentscope",
+    version = false, -- wait till new 0.7.0 release to put it back on semver
+    event = { "BufReadPre", "BufNewFile" },
+    opts = {
+      symbol = "│ ",
+      options = { try_as_border = true },
+    },
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = {
+          "help",
+          "alpha",
+          "dashboard",
+          "neo-tree",
+          "Trouble",
+          "lazy",
+          "mason",
+          "notify",
+          "toggleterm",
+          "lazyterm",
+        },
+        callback = function()
+          vim.b.miniindentscope_disable = true
+        end,
+      })
+    end,
   },
+  {
+    "felpafel/inlay-hint.nvim",
+    event = 'LspAttach',
+    config = true,
+  },
+  {
+    "VidocqH/lsp-lens.nvim",
+    event = "BufRead",
+    opts = {
+      include_declaration = true, -- Reference include declaration
+      sections = {                -- Enable / Disable specific request
+        definition = true,
+        references = true,
+        implementation = true,
+      },
+    },
+    keys = {
+      {
+        -- LspLensToggle
+        "<leader>ls",
+        "<cmd>LspLensToggle<CR>",
+        desc = "LSP Len Toggle",
+      },
+    },
+  },
+  { "neoclide/coc.nvim",                           branch = "release" }
 }
 return plugins

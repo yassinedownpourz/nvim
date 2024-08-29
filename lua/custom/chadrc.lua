@@ -15,15 +15,15 @@ M.ui = {
     load_on_startup = true,
   },
   hl_override = {
-    NvDashAscii                = { fg = "#689D6A", bg = "NONE" },
-    NvDashButtons              = { fg = "#83A598", bg = "NONE" },
+    NvDashAscii           = { fg = "#689D6A", bg = "NONE" },
+    NvDashButtons         = { fg = "#83A598", bg = "NONE" },
     -- TelescopeBorder            = { fg = "#689D6A", bg = "NONE" },
     -- TelescopePromptBorder      = { fg = "#689D6A", bg = "NONE" },
-    TelescopeResultsTitle      = { fg = "#689D6A", bg = "NONE" },
-    TelescopePreviewTitle      = { fg = "#689D6A", bg = "NONE" },
-    TelescopePromptPrefix      = { fg = "#689D6A", bg = "NONE" },
-    TelescopePromptTitle       = { fg = "#689D6A", bg = "NONE" },
-    IndentBlanklineContextChar = { fg = "#689D6A" },
+    TelescopeResultsTitle = { fg = "#689D6A", bg = "NONE" },
+    TelescopePreviewTitle = { fg = "#689D6A", bg = "NONE" },
+    TelescopePromptPrefix = { fg = "#689D6A", bg = "NONE" },
+    TelescopePromptTitle  = { fg = "#689D6A", bg = "NONE" },
+    -- IndentBlanklineContextChar = { fg = "#689D6A" },
   },
   ---@diagnostic disable
   changed_themes = {
