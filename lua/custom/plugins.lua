@@ -198,21 +198,21 @@ local plugins = {
           },
           git_status = {
             symbols = {
-              added = "  ",
-              deleted = "  ",
-              modified = "  ",
-              renamed = "  ",
-              untracked = "  ",
-              ignored = "  ",
-              unstaged = "  ",
-              staged = "  ",
-              conflict = "  ",
+              added = "✚ ",
+              deleted = "✖ ",
+              modified = "✱ ",
+              renamed = "➜ ",
+              untracked = "✧ ",
+              ignored = "◌ ",
+              unstaged = "✦ ",
+              staged = "✓ ",
+              conflict = "✶ ",
             },
           },
         },
         window = {
           position = "float",
-          width = 35,
+          width = 40,
         },
         filesystem = {
           use_libuv_file_watcher = true,
@@ -434,6 +434,6 @@ local plugins = {
       },
     },
   },
-  { "neoclide/coc.nvim",                           branch = "release" }
+  { "neoclide/coc.nvim",                           branch = "release" },
 }
 return plugins

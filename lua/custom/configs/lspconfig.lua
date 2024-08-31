@@ -18,17 +18,13 @@ local servers = {
   "pylyzer",
 }
 
--- lua-ls
-lspconfig.lua_ls.setup {
-  settings = {
-    Lua = {
-      hint = { enable = true },
-      diagnostics = {
-        globals = { 'vim' }
-      },
-    },
-  },
-}
+for _, lsp in ipairs(servers) do
+  lspconfig[lsp].setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+  }
+end
+
 -- tsserver
 local inlayHints = {
   includeInlayParameterNameHints = "all",
@@ -47,6 +43,17 @@ lspconfig.tsserver.setup {
     },
     javascript = {
       inlayHints = inlayHints,
+    },
+  },
+
+} -- lua-ls
+lspconfig.lua_ls.setup {
+  settings = {
+    Lua = {
+      hint = { enable = true },
+      diagnostics = {
+        globals = { 'vim' }
+      },
     },
   },
 }
@@ -80,10 +87,3 @@ lspconfig.pylyzer.setup {
     }
   },
 }
-
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-  }
-end
