@@ -21,12 +21,49 @@ M.ui = {
     TelescopePreviewTitle = { fg = "#689D6A", bg = "NONE" },
     TelescopePromptPrefix = { fg = "#689D6A", bg = "NONE" },
     TelescopePromptTitle  = { fg = "#689D6A", bg = "NONE" },
-    Comment               = { italic = true },
-    ["@comment"]          = { italic = true },
     FloatBorder           = { link = "TeleScopeBorder" },
     NvimTreeRootFolder    = { link = "NvimTreeNormal" },
-    Keyword               = { italic = true },
-    ["@keyword"]          = { italic = true },
+    Comment               = {
+      italic = true },
+    Keyword               = {
+      italic = true },
+    Include               = {
+      italic = true,
+    },
+    Repeat                = {
+      italic = true,
+    },
+    Conditional           = {
+      italic = true,
+    },
+    SpecialChar           = {
+      italic = true,
+    },
+    ["@keyword"]          = {
+      italic = true },
+    ["@comment"]          = {
+      italic = true },
+    ["@keyword.function"] = {
+      bold = true,
+    },
+    ["@keyword.return"]   = {
+      italic = true,
+    },
+    ["@function"]         = {
+      bold = true,
+    },
+    ["@operator"]         = {
+      bold = false,
+    },
+    ["@keyword.operator"] = {
+      bold = true,
+    },
+    ["@function.name"]    = {
+      bold = true,
+    },
+    ["@constant"]         = {
+      bold = true,
+    },
   },
   ---@diagnostic disable
   changed_themes = {

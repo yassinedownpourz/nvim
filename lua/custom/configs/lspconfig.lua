@@ -33,7 +33,7 @@ local inlayHints = {
   includeInlayVariableTypeHints = true,
   includeInlayVariableTypeHintsWhenTypeMatchesName = false,
   includeInlayPropertyDeclarationTypeHints = true,
-  includeInlayFunctionLikeReturnTypeHints = true,
+  includeInlayFunctionLikeReturnTypeHints = false,
   includeInlayEnumMemberValueHints = true,
 }
 lspconfig.tsserver.setup {
