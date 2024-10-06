@@ -1,358 +1,285 @@
--- All plugins have lazy=true by default,to load a plugin on startup just lazy=false
--- List of all default plugins & their definitions
-local default_plugins = {
-
-  "nvim-lua/plenary.nvim",
-
+return {
   {
-    "NvChad/base46",
-    branch = "v2.0",
-    build = function()
-      require("base46").load_all_highlights()
-    end,
+    "stevearc/conform.nvim",
+    event = "BufWritePre",
+    opts = require "configs.conform",
   },
 
   {
-    "NvChad/ui",
-    branch = "v2.0",
-    lazy = false,
-  },
-
-  {
-    "NvChad/nvterm",
-    init = function()
-      require("core.utils").load_mappings "nvterm"
-    end,
-    config = function(_, opts)
-      require "base46.term"
-      require("nvterm").setup(opts)
-    end,
-  },
-
-  {
-    "NvChad/nvim-colorizer.lua",
-    event = "User FilePost",
-    config = function(_, opts)
-      require("colorizer").setup(opts)
-
-      -- execute colorizer as soon as possible
-      vim.defer_fn(function()
-        require("colorizer").attach_to_buffer(0)
-      end, 0)
-    end,
-  },
-
-  {
-    "nvim-tree/nvim-web-devicons",
-    opts = function()
-      return { override = require "nvchad.icons.devicons" }
-    end,
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "devicons")
-      require("nvim-web-devicons").setup(opts)
-    end,
-  },
-
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    version = "2.20.7",
-    event = "User FilePost",
-    opts = function()
-      return require("plugins.configs.others").blankline
-    end,
-    config = function(_, opts)
-      require("core.utils").load_mappings "blankline"
-      dofile(vim.g.base46_cache .. "blankline")
-      require("indent_blankline").setup(opts)
+    "neovim/nvim-lspconfig",
+    config = function()
+      require "configs.lspconfig"
     end,
   },
 
   {
     "nvim-treesitter/nvim-treesitter",
-    event = { "BufReadPost", "BufNewFile" },
-    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
-    build = ":TSUpdate",
-    opts = function()
-      return require "plugins.configs.treesitter"
-    end,
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "syntax")
-      require("nvim-treesitter.configs").setup(opts)
-    end,
-  },
-
-  -- git stuff
-  {
-    "lewis6991/gitsigns.nvim",
-    event = "User FilePost",
-    opts = function()
-      return require("plugins.configs.others").gitsigns
-    end,
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "git")
-      require("gitsigns").setup(opts)
-    end,
-  },
-
-  -- lsp stuff
-  {
-    "williamboman/mason.nvim",
-    cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
-    opts = function()
-      return require "plugins.configs.mason"
-    end,
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "mason")
-      require("mason").setup(opts)
-
-      -- custom nvchad cmd to install all mason binaries listed
-      vim.api.nvim_create_user_command("MasonInstallAll", function()
-        if opts.ensure_installed and #opts.ensure_installed > 0 then
-          vim.cmd("MasonInstall " .. table.concat(opts.ensure_installed, " "))
-        end
-      end, {})
-
-      vim.g.mason_binaries_list = opts.ensure_installed
-    end,
-  },
-
-  {
-    "neovim/nvim-lspconfig",
     opts = {
-      inlay_hints = { enabled = true },
-    },
-    event = "User FilePost",
-    config = function()
-      require "plugins.configs.lspconfig"
-    end,
-  },
-
-  -- load luasnips + cmp related in insert mode only
-  {
-    "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
-    dependencies = {
-      {
-        -- snippet plugin
-        "L3MON4D3/LuaSnip",
-        dependencies = "rafamadriz/friendly-snippets",
-        opts = { history = true, updateevents = "TextChanged,TextChangedI" },
-        config = function(_, opts)
-          require("plugins.configs.others").luasnip(opts)
-        end,
-      },
-
-      -- autopairing of (){}[] etc
-      {
-        "windwp/nvim-autopairs",
-        opts = {
-          fast_wrap = {},
-          disable_filetype = { "TelescopePrompt", "vim" },
-        },
-        config = function(_, opts)
-          require("nvim-autopairs").setup(opts)
-
-          -- setup cmp for autopairs
-          local cmp_autopairs = require "nvim-autopairs.completion.cmp"
-          require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
-        end,
-      },
-
-      -- cmp sources plugins
-      {
-        "saadparwaiz1/cmp_luasnip",
-        "hrsh7th/cmp-nvim-lua",
-        "hrsh7th/cmp-nvim-lsp",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
+      ensure_installed = {
+        "lua",
+        "javascript",
+        "typescript",
+        "tsx",
+        "c",
+        "cpp",
+        "rust",
+        "php",
+        "html",
+        "css",
+        "python",
+        "xml",
+        "nix",
+        "yaml",
+        "json",
+        "java",
+        "markdown",
+        "make",
+        "cmake",
+        "fish",
+        "dockerfile",
+        "roc",
+        "haskell",
       },
     },
-    opts = function()
-      return require "plugins.configs.cmp"
-    end,
-    config = function(_, opts)
-      require("cmp").setup(opts)
-    end,
-  },
-
-  {
-    "numToStr/Comment.nvim",
-    keys = {
-      { "gcc", mode = "n",          desc = "Comment toggle current line" },
-      { "gc",  mode = { "n", "o" }, desc = "Comment toggle linewise" },
-      { "gc",  mode = "x",          desc = "Comment toggle linewise (visual)" },
-      { "gbc", mode = "n",          desc = "Comment toggle current block" },
-      { "gb",  mode = { "n", "o" }, desc = "Comment toggle blockwise" },
-      { "gb",  mode = "x",          desc = "Comment toggle blockwise (visual)" },
-    },
-    init = function()
-      require("core.utils").load_mappings "comment"
-    end,
-    config = function(_, opts)
-      require("Comment").setup(opts)
-    end,
-  },
-
-  -- file managing , picker etc
-  {
-    "nvim-tree/nvim-tree.lua",
-    cmd = { "NvimTreeToggle", "NvimTreeFocus" },
-    init = function()
-      require("core.utils").load_mappings "nvimtree"
-    end,
-    opts = function()
-      return require "plugins.configs.nvimtree"
-    end,
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "nvimtree")
-      require("nvim-tree").setup(opts)
-    end,
   },
 
   {
     "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    cmd = "Telescope",
-    init = function()
-      require("core.utils").load_mappings "telescope"
-    end,
-    opts = function()
-      return require "plugins.configs.telescope"
-    end,
-    config = function(_, opts)
-      dofile(vim.g.base46_cache .. "telescope")
-      local telescope = require "telescope"
-      telescope.setup(opts)
-
-      -- load extensions
-      for _, ext in ipairs(opts.extensions_list) do
-        telescope.load_extension(ext)
-      end
-    end,
+    opts = {
+      defaults = {
+        layout_strategy = "horizontal",
+        prompt_prefix = "   ",
+        layout_config = {
+          height = 0.75,
+          prompt_position = "top",
+          vertical = {
+            mirror = true,
+            preview_cutoff = 0,
+          },
+        },
+      },
+    },
   },
 
-  -- Only load whichkey after all the gui
   {
-    "folke/which-key.nvim",
-    keys = { "<leader>", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g" },
-    init = function()
-      require("core.utils").load_mappings "whichkey"
+    "gelguy/wilder.nvim",
+    config = function()
+      local opts = require "plugins.custom.wilder"
+      require("wilder").setup(opts)
     end,
-    cmd = "WhichKey",
+  },
+
+  {
+    "rmagatti/auto-session",
+    lazy = false,
+    config = function()
+      local opts = require("plugins.custom.auto-session").opts
+      require("auto-session").setup(opts)
+    end,
+  },
+
+  {
+    "utilyre/barbecue.nvim",
+    name = "barbecue",
+    lazy = true,
+    version = "*",
+    dependencies = {
+      "SmiteshP/nvim-navic",
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      local opts = require("plugins.custom.barbecue").opts
+      require("barbecue").setup(opts)
+    end,
+  },
+
+  {
+    "wfxr/minimap.vim",
+    lazy = true,
+    cmd = {
+      "Minimap",
+      "MinimapClose",
+      "MinimapToggle",
+      "MinimapRefresh",
+      "MinimapUpdateHighlight",
+    },
+  },
+
+  {
+    "rcarriga/nvim-notify",
+    config = function()
+      local opts = require("plugins.custom.notify").opts
+      require("notify").setup(opts)
+    end,
+  },
+
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    lazy = true,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+    },
+    event = "VeryLazy",
+    keys = {
+      { "<leader>e", ":Neotree toggle float<CR>", silent = true, desc = "Float File Explorer" },
+    },
+    config = function()
+      local opts = require("plugins.custom.neo-tree").opts
+      require("neo-tree").setup(opts)
+    end,
+  },
+
+  { "joosepalviste/nvim-ts-context-commentstring", lazy = true },
+
+  {
+    "stevearc/dressing.nvim",
+    dependencies = { "MunifTanjim/nui.nvim" },
+    config = function()
+      require("dressing").setup {}
+    end,
+  },
+
+  {
+    "kylechui/nvim-surround",
+    version = "*",
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup {}
+    end,
+  },
+
+  {
+    "ggandor/flit.nvim",
+    config = function()
+      require("flit").setup {}
+    end,
+  },
+
+  {
+    "ggandor/leap.nvim",
+    keys = {
+      { "s", mode = { "n", "x", "o" }, desc = "Leap forward to" },
+      { "S", mode = { "n", "x", "o" }, desc = "Leap backward to" },
+      { "gs", mode = { "n", "x", "o" }, desc = "Leap from windows" },
+    },
     config = function(_, opts)
-      dofile(vim.g.base46_cache .. "whichkey")
-      require("which-key").setup(opts)
+      local leap = require "leap"
+      for k, v in pairs(opts) do
+        leap.opts[k] = v
+      end
+      leap.add_default_mappings(true)
+      vim.keymap.del({ "x", "o" }, "x")
+      vim.keymap.del({ "x", "o" }, "X")
     end,
   },
+
+  {
+    "echasnovski/mini.indentscope",
+    version = false,
+    event = { "BufReadPre", "BufNewFile" },
+    opts = {
+      symbol = "│ ",
+      options = { try_as_border = true },
+    },
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = {
+          "help",
+          "alpha",
+          "dashboard",
+          "neo-tree",
+          "Trouble",
+          "lazy",
+          "mason",
+          "notify",
+          "toggleterm",
+          "lazyterm",
+        },
+        callback = function()
+          vim.b.miniindentscope_disable = true
+        end,
+      })
+    end,
+  },
+
+  {
+    "felpafel/inlay-hint.nvim",
+    event = "LspAttach",
+    config = function()
+      local opts = require("plugins.custom.inlay-hint").opts
+      require("inlay-hint").setup(opts)
+    end,
+  },
+
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    event = "BufRead",
+    opts = require("plugins.custom.todo-comments").opts,
+  },
+
+  {
+    "zbirenbaum/copilot.lua",
+    lazy = false,
+    event = "InsertEnter",
+    cmd = "Copilot",
+    build = ":Copilot auth",
+    config = function()
+      local opts = require("plugins.custom.copilot").opts
+      require("copilot").setup(opts)
+    end,
+  },
+
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      {
+        "zbirenbaum/copilot-cmp",
+        config = function()
+          require("copilot_cmp").setup()
+        end,
+      },
+    },
+    opts = {
+      sources = {
+        { name = "nvim_lsp", group_index = 2 },
+        { name = "copilot", group_index = 2 },
+        { name = "luasnip", group_index = 2 },
+        { name = "buffer", group_index = 2 },
+        { name = "nvim_lua", group_index = 2 },
+        { name = "path", group_index = 2 },
+      },
+    },
+  },
+
+  {
+    "echasnovski/mini.nvim",
+    version = "*",
+    config = function()
+      require("mini.ai").setup()
+    end,
+  },
+
+  -- {
+  --   "VidocqH/lsp-lens.nvim",
+  --   event = "BufRead",
+  --   opts = {
+  --     include_declaration = true, -- Reference include declaration
+  --     sections = { -- Enable / Disable specific request
+  --       definition = true,
+  --       references = true,
+  --       implementation = true,
+  --     },
+  --   },
+  --   keys = {
+  --     {
+  --       -- LspLensToggle
+  --       "<leader>ls",
+  --       "<cmd>LspLensToggle<CR>",
+  --       desc = "LSP Len Toggle",
+  --     },
+  --   },
+  -- },
 }
-
-local config = require("core.utils").load_config()
-
-if #config.plugins > 0 then
-  table.insert(default_plugins, { import = config.plugins })
-end
-
-require("lazy").setup(default_plugins, config.lazy_nvim)
-require("plugins.configs.wilder")
-require("auto-session").setup({
-  session_lens = {
-    load_on_setup = true,
-    theme_conf = { border = true },
-    previewer = false,
-    buftypes_to_ignore = {},
-  },
-})
-require("barbecue").setup({
-  create_autocmd = false, -- prevent barbecue from updating itself automatically
-})
-require("notify").setup({
-  stages = "fade_in_slide_out",
-  timeout = 3000,
-  background_colour = "#282828",
-  icons = {
-    ERROR = "",
-    WARN = "",
-    INFO = "",
-    DEBUG = "",
-    TRACE = "✎",
-  },
-  max_height = function() return math.floor(vim.o.lines * 0.50) end,
-  max_width = function() return math.floor(vim.o.columns * 0.45) end,
-  on_open = function(win) vim.api.nvim_win_set_config(win, { focusable = false }) end
-})
--- require("mini.surround").setup()
--- require("mini.pairs").setup()
--- require('mini.animate').setup()
-require("inlay-hint").setup({
-  virt_text_pos = "inline",
-  display_callback = function(line_hints, options, bufnr)
-    if options.virt_text_pos == 'inline' then
-      local lhint = {}
-      for _, hint in pairs(line_hints) do
-        local text = ''
-        local label = hint.label
-        if type(label) == 'string' then
-          text = label
-        else
-          for _, part in ipairs(label) do
-            text = text .. part.value
-          end
-        end
-        if hint.paddingLeft then
-          text = ' ' .. text
-        end
-        if hint.paddingRight then
-          text = text .. ' '
-        end
-        lhint[#lhint + 1] = { text = text, col = hint.position.character }
-      end
-      return lhint
-    elseif options.virt_text_pos == 'eol' or options.virt_text_pos == 'right_align' then
-      local k1 = {}
-      local k2 = {}
-      table.sort(line_hints, function(a, b)
-        return a.position.character < b.position.character
-      end)
-      for _, hint in pairs(line_hints) do
-        local label = hint.label
-        local kind = hint.kind
-        local node = kind == 1
-            and vim.treesitter.get_node({
-              bufnr = bufnr,
-              pos = {
-                hint.position.line,
-                hint.position.character - 1,
-              },
-            })
-            or nil
-        local node_text = node and vim.treesitter.get_node_text(node, bufnr, {}) or ''
-        local text = ''
-        if type(label) == 'string' then
-          text = label
-        else
-          for _, part in ipairs(label) do
-            text = text .. part.value
-          end
-        end
-        if kind == 1 then
-          k1[#k1 + 1] = text:gsub(':%s*', node_text .. ': ')
-        else
-          k2[#k2 + 1] = text:gsub(':$', '')
-        end
-      end
-      local text = ''
-      if #k2 > 0 then
-        text = '<- (' .. table.concat(k2, ',') .. ')'
-      end
-      if #text > 0 then
-        text = text .. ' '
-      end
-      if #k1 > 0 then
-        text = text .. '=> ' .. table.concat(k1, ', ')
-      end
-
-      return text
-    end
-    return nil
-  end,
-})
