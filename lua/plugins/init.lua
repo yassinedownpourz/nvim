@@ -37,10 +37,38 @@ return {
         "cmake",
         "fish",
         "dockerfile",
-        "roc",
         "haskell",
       },
     },
+  },
+
+  {
+    -- Add a Treesitter parser for Laravel Blade to provide Blade syntax highlighting.
+    "nvim-treesitter/nvim-treesitter",
+    opts = function(_, opts)
+      vim.list_extend(opts.ensure_installed, {
+        "blade",
+        "php_only",
+      })
+    end,
+    config = function(_, opts)
+      vim.filetype.add {
+        pattern = {
+          [".*%.blade%.php"] = "blade",
+        },
+      }
+
+      require("nvim-treesitter.configs").setup(opts)
+      local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+      parser_config.blade = {
+        install_info = {
+          url = "https://github.com/EmranMR/tree-sitter-blade",
+          files = { "src/parser.c" },
+          branch = "main",
+        },
+        filetype = "blade",
+      }
+    end,
   },
 
   {
@@ -254,32 +282,58 @@ return {
     },
   },
 
+  -- {
+  --   "echasnovski/mini.nvim",
+  --   version = "*",
+  --   config = function()
+  --     require("mini.ai").setup()
+  --   end,
+  -- },
+
   {
-    "echasnovski/mini.nvim",
-    version = "*",
-    config = function()
-      require("mini.ai").setup()
-    end,
+    "VidocqH/lsp-lens.nvim",
+    event = "BufRead",
+    opts = {
+      include_declaration = true, -- Reference include declaration
+      sections = { -- Enable / Disable specific request
+        definition = true,
+        references = true,
+        implementation = true,
+      },
+    },
+    keys = {
+      {
+        -- LspLensToggle
+        "<leader>ls",
+        "<cmd>LspLensToggle<CR>",
+        desc = "LSP Len Toggle",
+      },
+    },
   },
 
-  -- {
-  --   "VidocqH/lsp-lens.nvim",
-  --   event = "BufRead",
-  --   opts = {
-  --     include_declaration = true, -- Reference include declaration
-  --     sections = { -- Enable / Disable specific request
-  --       definition = true,
-  --       references = true,
-  --       implementation = true,
-  --     },
-  --   },
-  --   keys = {
-  --     {
-  --       -- LspLensToggle
-  --       "<leader>ls",
-  --       "<cmd>LspLensToggle<CR>",
-  --       desc = "LSP Len Toggle",
-  --     },
-  --   },
-  -- },
+  {
+    "adalessa/laravel.nvim",
+    dependencies = {
+      "tpope/vim-dotenv",
+      "nvim-telescope/telescope.nvim",
+      "MunifTanjim/nui.nvim",
+      "kevinhwang91/promise-async",
+    },
+    cmd = { "Laravel" },
+    keys = {
+      { "<leader>la", ":Laravel artisan<cr>" },
+      { "<leader>lr", ":Laravel routes<cr>" },
+      { "<leader>lm", ":Laravel related<cr>" },
+    },
+    config = true,
+    opts = {},
+  },
+
+  {
+    "ricardoramirezr/blade-nav.nvim",
+    dependencies = {
+      "hrsh7th/nvim-cmp",
+    },
+    ft = { "blade", "php" },
+  },
 }

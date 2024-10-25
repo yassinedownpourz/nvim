@@ -45,15 +45,15 @@ M.base46 = {
     ["@keyword.return"] = {
       italic = true,
     },
-    -- ["@function"] = {
-    --   bold = true,
-    -- },
-    -- ["@keyword.function"] = {
-    --   bold = true,
-    -- },
-    -- ["@function.name"] = {
-    --   bold = true,
-    -- },
+    ["@function"] = {
+      bold = false,
+    },
+    ["@keyword.function"] = {
+      bold = true,
+    },
+    ["@function.name"] = {
+      bold = false,
+    },
     ["@operator"] = {
       bold = false,
     },

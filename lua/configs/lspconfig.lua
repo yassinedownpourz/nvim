@@ -7,13 +7,13 @@ local servers = {
   "nil_ls",
   "html",
   "cssls",
+  "tailwindcss",
   "emmet_language_server",
   "clangd",
-  "phpactor",
   "docker_compose_language_service",
   "spectral",
-  -- "basedpyright",
   -- "jdtls",
+  -- "basedpyright",
 }
 local nvlsp = require "nvchad.configs.lspconfig"
 
@@ -24,6 +24,18 @@ for _, lsp in ipairs(servers) do
     capabilities = nvlsp.capabilities,
   }
 end
+
+-- emmet_language_server
+lspconfig.emmet_language_server.setup {
+  filetypes = {
+    "html",
+    "css",
+    "blade",
+    "typescriptreact",
+    "javascriptreact",
+    "php",
+  },
+}
 
 -- lua-ls
 lspconfig.lua_ls.setup {
@@ -73,24 +85,24 @@ lspconfig.clangd.setup {
 -- }
 
 -- jdtls
--- lspconfig.jdtls.setup {
---   settings = {
---     java = {
---       inlayHints = {
---         parameterNames = {
---           enabled = "all",
---           exclusions = { "this" },
---         },
---       },
---     },
---   },
--- }
+lspconfig.jdtls.setup {
+  settings = {
+    java = {
+      inlayHints = {
+        parameterNames = {
+          enabled = "all",
+          exclusions = { "this" },
+        },
+      },
+    },
+  },
+}
 
 -- tsserver
 local inlayHints = {
   includeInlayParameterNameHints = "all",
   includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-  includeInlayFunctionParameterTypeHints = true,
+  includeInlayFunctionParameterTypeHints = false,
   includeInlayVariableTypeHints = true,
   includeInlayVariableTypeHintsWhenTypeMatchesName = false,
   includeInlayPropertyDeclarationTypeHints = true,
@@ -117,8 +129,8 @@ lspconfig.ts_ls.setup {
 -- phpactor
 lspconfig.phpactor.setup {
   init_options = {
-    ["language_server.diagnostic_providers"] = {},
-    ["language_server_worse_reflection.diagnostics.enable"] = true,
+    -- ["language_server.diagnostic_providers"] = {},
+    -- ["language_server_worse_reflection.diagnostics.enable"] = true,
     ["language_server_worse_reflection.inlay_hints.enable"] = true,
     ["language_server_worse_reflection.inlay_hints.params"] = true,
   },

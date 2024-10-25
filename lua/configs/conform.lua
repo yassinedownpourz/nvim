@@ -12,9 +12,10 @@ local options = {
     typescriptreact = { "prettierd" },
     c = { "clang_format" },
     cpp = { "clang_format" },
-    php = { "php_cs_fixer" },
+    php = { "pint", "php_cs_fixer" },
+    blade = { "blade-formatter" },
+    java = { "clang_format" },
     -- python = { "black" },
-    -- java = { "clang_format" },
   },
 
   format_on_save = {
