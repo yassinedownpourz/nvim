@@ -29,6 +29,22 @@ local function set_key_mappings()
     local options = vim.bo.ft == "NvimTree" and "nvimtree" or "default"
     require("menu").open(options, { mouse = true })
   end, {})
+  vim.keymap.set("n", ",,", function()
+    local word = vim.fn.expand "<cword>"
+
+    -- If LSP is available, use it
+    if #vim.lsp.get_active_clients { bufnr = 0 } > 0 then
+      vim.lsp.buf.rename()
+      return
+    end
+
+    -- Otherwise, provide a better substitute experience
+    -- Pre-populate the command line with the word and position cursor
+    local cmd = ":%s/\\<" .. word .. "\\>/" .. word
+    vim.fn.feedkeys(":" .. cmd, "n")
+    -- Move cursor left by length of word to position between the '/'
+    vim.fn.feedkeys(string.rep("<Left>", #word), "n")
+  end, { noremap = true })
 end
 
 local function set_highlights()
@@ -65,7 +81,9 @@ local function set_highlights()
 end
 
 local function set_autocommands()
-  vim.api.nvim_create_autocmd({
+  local autocmd = vim.api.nvim_create_autocmd
+
+  autocmd({
     "WinScrolled",
     "BufWinEnter",
     "CursorHold",
@@ -78,7 +96,7 @@ local function set_autocommands()
     end,
   })
 
-  vim.api.nvim_create_autocmd("LspAttach", {
+  autocmd("LspAttach", {
     callback = function(args)
       local bufnr = args.buf ---@type number
       local client = vim.lsp.get_client_by_id(args.data.client_id)
@@ -90,18 +108,7 @@ local function set_autocommands()
       end
     end,
   })
-end
 
-local function main()
-  set_options()
-  set_key_mappings()
-  set_highlights()
-  set_autocommands()
-  vim.notify = require "notify"
-  vim.g.indent_blankline_use_treesitter = true
-  vim.g.indentLine_char = "."
-
-  local autocmd = vim.api.nvim_create_autocmd
   autocmd("BufReadPost", {
     pattern = "*",
     callback = function()
@@ -116,6 +123,15 @@ local function main()
       end
     end,
   })
+end
+
+local function main()
+  set_options()
+  set_key_mappings()
+  set_highlights()
+  set_autocommands()
+  vim.notify = require "notify"
+  vim.g.indent_blankline_use_treesitter = true
 end
 
 main()

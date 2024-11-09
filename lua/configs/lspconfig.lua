@@ -7,12 +7,13 @@ local servers = {
   "nil_ls",
   "html",
   "cssls",
-  "tailwindcss",
   "emmet_language_server",
   "clangd",
   "docker_compose_language_service",
   "spectral",
-  -- "jdtls",
+  "jdtls",
+  "tailwindcss",
+  -- "phpactor",
   -- "basedpyright",
 }
 local nvlsp = require "nvchad.configs.lspconfig"
@@ -129,8 +130,6 @@ lspconfig.ts_ls.setup {
 -- phpactor
 lspconfig.phpactor.setup {
   init_options = {
-    -- ["language_server.diagnostic_providers"] = {},
-    -- ["language_server_worse_reflection.diagnostics.enable"] = true,
     ["language_server_worse_reflection.inlay_hints.enable"] = true,
     ["language_server_worse_reflection.inlay_hints.params"] = true,
   },
@@ -143,6 +142,21 @@ lspconfig.dockerls.setup {
       languageserver = {
         formatter = {
           ignoreMultilineInstructions = true,
+        },
+      },
+    },
+  },
+}
+
+-- haskell
+lspconfig.hls.setup {
+  settings = {
+    haskell = {
+      plugin = {
+        ghcide = {
+          codeLens = {
+            globalOn = true,
+          },
         },
       },
     },

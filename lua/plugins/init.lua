@@ -294,8 +294,8 @@ return {
     "VidocqH/lsp-lens.nvim",
     event = "BufRead",
     opts = {
-      include_declaration = true, -- Reference include declaration
-      sections = { -- Enable / Disable specific request
+      include_declaration = true,
+      sections = {
         definition = true,
         references = true,
         implementation = true,
@@ -336,4 +336,47 @@ return {
     },
     ft = { "blade", "php" },
   },
+
+  {
+    "kdheepak/lazygit.nvim",
+    lazy = true,
+    cmd = {
+      "LazyGit",
+      "LazyGitConfig",
+      "LazyGitCurrentFile",
+      "LazyGitFilter",
+      "LazyGitFilterCurrentFile",
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    keys = {
+      { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+    },
+  },
+
+  {
+    "mg979/vim-visual-multi",
+    lazy = false,
+    init = function()
+      vim.g.VM_default_mappings = 0
+      vim.g.VM_maps = {
+        ["Find Under"] = "",
+      }
+      vim.g.VM_add_cursor_at_pos_no_mappings = 1
+    end,
+  },
+
+  -- {
+  --   "kndndrj/nvim-dbee",
+  --   dependencies = {
+  --     "MunifTanjim/nui.nvim",
+  --   },
+  --   build = function()
+  --     require("dbee").install "curl"
+  --   end,
+  --   config = function()
+  --     require("dbee").setup()
+  --   end,
+  -- },
 }
