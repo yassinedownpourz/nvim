@@ -10,6 +10,23 @@ local M = {}
 M.base46 = {
   theme = "gruvbox",
   transparency = true,
+  integrations = {
+    "blankline",
+    "cmp",
+    "codeactionmenu",
+    "dap",
+    "devicons",
+    "hop",
+    "lsp",
+    "markview",
+    "mason",
+    "notify",
+    "nvimtree",
+    "rainbowdelimiters",
+    "semantic_tokens",
+    "todo",
+    "whichkey",
+  },
   hl_override = {
     NvDashAscii = { fg = "#689D6A", bg = "NONE" },
     NvDashButtons = { fg = "#83A598", bg = "NONE" },
@@ -123,15 +140,50 @@ M.base46 = {
 M.ui = {
   nvdash = {
     load_on_startup = true,
+    header = {
+      "             ▄ ▄                     ",
+      "         ▄   ▄▄▄     ▄ ▄▄▄ ▄ ▄       ",
+      "         █ ▄ █▄█ ▄▄▄ █ █▄█ █ █       ",
+      "      ▄▄ █▄█▄▄▄█ █▄█▄█▄▄█▄▄█ █       ",
+      "    ▄ █▄▄█ ▄ ▄▄ ▄█ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄    ",
+      "    █▄▄▄▄ ▄▄▄ █ ▄ ▄▄▄ ▄ ▄▄▄ ▄ ▄ █ ▄  ",
+      "  ▄ █ █▄█ █▄█ █ █ █▄█ █ █▄█ ▄▄▄ █ █  ",
+      "  █▄█ ▄ █▄▄█▄▄█ █ ▄▄█ █ ▄ █ █▄█▄█ █  ",
+      "      █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█ █▄█▄▄▄█      ",
+    },
   },
   statusline = {
     theme = "vscode",
     separator_style = "default",
   },
+  tabufline = {
+    order = { "buffers", "tabs" },
+  },
 }
 
 M.lsp = {
-  signature = true,
+  signature = false,
 }
 
+M.cheatsheet = {
+  excluded_groups = { "_" },
+}
+
+M.colorify = {
+  enabled = true,
+  mode = "virtual",
+  virt_text = "󱓻 ",
+  highlight = { hex = true, lspvars = true },
+}
+
+M.term = {
+  float = {
+    border = "rounded",
+    height = 0.5,
+    width = 0.58,
+    col = 0.2,
+    row = 0.2,
+  },
+  sizes = {},
+}
 return M

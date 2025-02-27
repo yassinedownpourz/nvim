@@ -19,16 +19,16 @@ local function set_key_mappings()
   end, { desc = "Options | Toggle Tabufline", silent = true })
 
   -- Volt Menu
-  vim.keymap.set("n", "<C-t>", function()
-    require("menu").open "default"
-  end, {})
+  -- vim.keymap.set("n", "<C-t>", function()
+  --   require("menu").open "default"
+  -- end, {})
+  -- vim.keymap.set("n", "<RightMouse>", function()
+  --   vim.cmd.exec '"normal! \\<RightMouse>"'
+  --
+  --   local options = vim.bo.ft == "NvimTree" and "nvimtree" or "default"
+  --   require("menu").open(options, { mouse = true })
+  -- end, {})
 
-  vim.keymap.set("n", "<RightMouse>", function()
-    vim.cmd.exec '"normal! \\<RightMouse>"'
-
-    local options = vim.bo.ft == "NvimTree" and "nvimtree" or "default"
-    require("menu").open(options, { mouse = true })
-  end, {})
   vim.keymap.set("n", ",,", function()
     local word = vim.fn.expand "<cword>"
 
@@ -126,12 +126,36 @@ local function set_autocommands()
 end
 
 local function main()
+  vim.opt_local.tabstop = 2
+  vim.opt_local.shiftwidth = 2
+  vim.opt_local.expandtab = true
+  vim.opt_local.autoindent = true
+  vim.opt_local.smarttab = true
   set_options()
   set_key_mappings()
   set_highlights()
   set_autocommands()
   vim.notify = require "notify"
   vim.g.indent_blankline_use_treesitter = true
+  vim.g.lua_snippets_path = vim.fn.stdpath "config" .. "/lua/lua_snippets"
+  vim.g.markdown_fenced_languages = {
+    "ts=typescript",
+  }
+  vim.api.nvim_create_autocmd("BufDelete", {
+    callback = function()
+      local bufs = vim.t.bufs
+      if #bufs == 1 and vim.api.nvim_buf_get_name(bufs[1]) == "" then
+        vim.cmd "Nvdash"
+      end
+    end,
+  })
+  -- Add Quarto file type detection
+  vim.cmd [[
+  autocmd BufRead,BufNewFile *.qmd set filetype=quarto
+]]
+
+  -- Enable syntax highlighting for Quarto
+  vim.cmd "syntax enable"
 end
 
 main()

@@ -7,14 +7,14 @@ local servers = {
   "nil_ls",
   "html",
   "cssls",
-  "emmet_language_server",
   "clangd",
   "docker_compose_language_service",
   "spectral",
+  "emmet_language_server",
+  -- "intelephense",
   "jdtls",
-  "tailwindcss",
-  -- "phpactor",
-  -- "basedpyright",
+  "basedpyright",
+  "denols",
 }
 local nvlsp = require "nvchad.configs.lspconfig"
 
@@ -31,6 +31,7 @@ lspconfig.emmet_language_server.setup {
   filetypes = {
     "html",
     "css",
+    "xml",
     "blade",
     "typescriptreact",
     "javascriptreact",
@@ -66,24 +67,25 @@ lspconfig.clangd.setup {
 }
 
 -- basedpyright
--- lspconfig.basedpyright.setup {
---   settings = {
---     basedpyright = {
---       disableOrganizeImports = true,
---       typeCheckingMode = "standard",
---       analysis = {
---         inlayHints = {
---           callArgumentNames = "all",
---           functionReturnTypes = true,
---           pytestParameters = true,
---           variableTypes = true,
---         },
---         autoFormatStrings = true,
---       },
---       linting = { enabled = true },
---     },
---   },
--- }
+lspconfig.basedpyright.setup {
+  settings = {
+    basedpyright = {
+      disableOrganizeImports = false,
+      typeCheckingMode = "standard",
+      analysis = {
+        diagnosticMode = "openFilesOnly",
+        inlayHints = {
+          callArgumentNames = "all",
+          functionReturnTypes = true,
+          pytestParameters = true,
+          variableTypes = true,
+        },
+        autoFormatStrings = true,
+      },
+      linting = { enabled = true },
+    },
+  },
+}
 
 -- jdtls
 lspconfig.jdtls.setup {
@@ -100,40 +102,47 @@ lspconfig.jdtls.setup {
 }
 
 -- tsserver
-local inlayHints = {
-  includeInlayParameterNameHints = "all",
-  includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-  includeInlayFunctionParameterTypeHints = false,
-  includeInlayVariableTypeHints = true,
-  includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-  includeInlayPropertyDeclarationTypeHints = true,
-  includeInlayFunctionLikeReturnTypeHints = false,
-  includeInlayEnumMemberValueHints = true,
+local typescript_tools = require "typescript-tools"
+typescript_tools.setup {
+  on_attach = function(client)
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  end,
+  root_dir = lspconfig.util.root_pattern "package.json",
+  single_file_support = false,
 }
-lspconfig.ts_ls.setup {
+
+-- deno
+lspconfig.denols.setup {
+  root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
+}
+
+-- tailwindcss
+lspconfig.tailwindcss.setup {
+  filetypes = { "typescriptreact" },
+  flags = { debounce_text_changes = 300 },
+  root_dir = lspconfig.util.root_pattern "tailwind.config.js",
   settings = {
-    typescript = {
-      suggest = {
-        completeFunctionCalls = true,
+    tailwindCSS = {
+      experimental = {
+        classRegex = {
+          "(?:class:[\\s\\n]*|class=)['\"]([^'\"]+)['\"]",
+        },
       },
-      inlayHints = inlayHints,
-    },
-    javascript = {
-      suggest = {
-        completeFunctionCalls = true,
-      },
-      inlayHints = inlayHints,
     },
   },
 }
 
 -- phpactor
-lspconfig.phpactor.setup {
-  init_options = {
-    ["language_server_worse_reflection.inlay_hints.enable"] = true,
-    ["language_server_worse_reflection.inlay_hints.params"] = true,
-  },
-}
+-- lspconfig.phpactor.setup {
+--   init_options = {
+--     ["language_server_phpstan.enabled"] = true,
+--     ["language_server_worse_reflection.inlay_hints.enable"] = true,
+--     ["language_server_worse_reflection.inlay_hints.params"] = true,
+--     ["language_server_worse_reflection.inlay_hints.types"] = true,
+--     ["language_server_worse_reflection.diagnostics.enable"] = false,
+--   },
+-- }
 
 -- docker
 lspconfig.dockerls.setup {
@@ -162,3 +171,10 @@ lspconfig.hls.setup {
     },
   },
 }
+
+-- intelephense
+-- lspconfig.intelephense.setup {
+--   init_options = {
+--     licenceKey = os.getenv "INTELEPHENSE_LICENSE_KEY ",
+--   },
+-- }
